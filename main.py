@@ -18,7 +18,7 @@ class Paypal:
                                                         \x1b[38;5;63m ╔═╗╔═╗╦ ╦╔═╗╔═╗╦   
                                                         \x1b[38;5;63m ╠═╝╠═╣╚╦╝╠═╝╠═╣║  
                                                         \x1b[38;5;63m ╩  ╩ ╩ ╩ ╩  ╩ ╩╩═╝
-                                                            \u001b[0mMail \x1b[\x1b[38;5;63mAccess
+                                                            \u001b[0mMail \x1b[\x1b[38;5;63mAccess\u001b[0m
                                                         ''')
 
     def update_title(self):
